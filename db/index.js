@@ -37,7 +37,7 @@ const updateUser = async (id, fields = {}) => {
       `
       UPDATE users
       SET ${setString}
-      WHERE id =${id}
+      WHERE id = ${id}
       RETURNING *;
     `,
       Object.values(fields)
@@ -69,7 +69,7 @@ const getUserById = async (userId) => {
     } = await client.query(`
       SELECT id, username, name, location, active 
       FROM users
-      WHERE id=${userId};
+      WHERE id = ${userId};
     `);
 
     if (!user) return null;
@@ -119,7 +119,7 @@ const updatePost = async (postId, fields = {}) => {
         `
       UPDATE posts
       SET ${setString}
-      WHERE id =${postId}
+      WHERE id = ${postId}
       RETURNING *;
         `,
         Object.values(fields)
@@ -219,7 +219,7 @@ const getPostById = async (postId) => {
     );
 
     post.tags = tags;
-    post.author = author.username;
+    post.author = author;
 
     delete post.authorId;
 
@@ -254,7 +254,6 @@ const createTags = async (tagList) => {
   if (tagList.length === 0) return;
 
   const insertValues = tagList.map((_, index) => `$${index + 1}`).join('), (');
-
   const selectValues = tagList.map((_, index) => `$${index + 1}`).join(', ');
 
   try {
@@ -269,7 +268,8 @@ const createTags = async (tagList) => {
 
     const { rows } = await client.query(
       `
-      SELECT * FROM tags
+      SELECT * 
+      FROM tags
       WHERE name
       IN (${selectValues});
     `,
