@@ -1,3 +1,6 @@
+// JWT
+require('dotenv').config();
+
 // Setting up express
 const PORT = 3000;
 const express = require('express');
@@ -17,6 +20,7 @@ server.listen(PORT, () => {
   console.log('The server is up on port', PORT);
 });
 
+// This will run on every request
 server.use((req, res, next) => {
   console.log('<____Body Logger START____>');
   console.log(req.body);
