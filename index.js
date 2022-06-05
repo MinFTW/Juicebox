@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 // Setting up express
-const { PORT = 3000 } = process.env
+const { PORT = 3000 } = process.env;
 const express = require('express');
 const server = express();
 
@@ -11,14 +11,6 @@ const morgan = require('morgan');
 server.use(morgan('dev'));
 
 server.use(express.json());
-
-// Connecting to our database
-const { client } = require('./db');
-client.connect();
-
-server.listen(PORT, () => {
-  console.log('The server is up on port', PORT);
-});
 
 // This will run on every request
 server.use((req, res, next) => {
@@ -32,3 +24,11 @@ server.use((req, res, next) => {
 // Setting up our routes which all start with /api
 const apiRouter = require('./api');
 server.use('/api', apiRouter);
+
+// Connecting to our database
+const { client } = require('./db');
+client.connect();
+
+server.listen(PORT, () => {
+  console.log('The server is up on port', PORT);
+});
