@@ -15,6 +15,7 @@ apiRouter.use(async (req, res, next) => {
   } else if (auth.startsWith(prefix)) {
     const token = auth.slice(prefix.length);
 
+    // try to decode the id and set the user
     try {
       const { id } = jwt.verify(token, JWT_SECRET);
 
@@ -33,6 +34,7 @@ apiRouter.use(async (req, res, next) => {
   }
 });
 
+// Testing if JWT is working
 apiRouter.use((req, res, next) => {
   if (req.user) {
     console.log('User is set:', req.user);
