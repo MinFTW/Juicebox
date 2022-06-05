@@ -26,7 +26,7 @@ postsRouter.get('/', async (req, res, next) => {
 });
 
 postsRouter.post('/', requireUser, async (req, res, next) => {
-  const { title, content, tags = '' } = req.body;
+  const { title, content, tags = "" } = req.body;
 
   // trim removes whitespace before and after the tags
   // split turns the strings into an array using regex
@@ -77,7 +77,7 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   try {
     const originalPost = await getPostById(postId);
 
-    if (originalPost.authorId === req.user.id) {
+    if (originalPost.author.id === req.user.id) {
       const updatedPost = await updatePost(postId, updateFields);
       res.send({ post: updatedPost });
     } else {

@@ -11,10 +11,14 @@ usersRouter.use((req, res, next) => {
 });
 
 // This will get all the users stored in our database and send back a users JSON
-usersRouter.get('/', async (req, res) => {
-  const users = await getAllUsers();
+usersRouter.get('/', async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
 
-  res.send({ users });
+    res.send({ users });
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
 });
 
 usersRouter.post('/login', async (req, res, next) => {

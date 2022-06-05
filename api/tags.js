@@ -8,7 +8,7 @@ tagsRouter.use((req, res, next) => {
   next();
 });
 
-tagsRouter.get('/', async (req, res) => {
+tagsRouter.get('/', async (req, res, next) => {
   try {
     const tags = await getAllTags();
 
@@ -27,7 +27,7 @@ tagsRouter.get('/:tagName/posts', async (req, res, next) => {
 
     const posts = postsByTagName.filter((post) => {
       if (post.active) return true;
-      if (req.user && post.author.id === req.user.id) return true;
+      if (req.user && req.user.id === post.author.id) return true;
       return false;
     });
 

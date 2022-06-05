@@ -10,9 +10,6 @@ const server = express();
 const { client } = require('./db');
 client.connect();
 
-const bodyParser = require('body-parser');
-server.use(bodyParser.json());
-
 // Setting up morgan which logs incoming requests
 const morgan = require('morgan');
 server.use(morgan('dev'));
