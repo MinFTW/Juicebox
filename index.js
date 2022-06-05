@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 // Setting up express
-const { PORT = 3000 } = process.env;
+const { PORT = 3000 } = process.env
 const express = require('express');
 const server = express();
 
