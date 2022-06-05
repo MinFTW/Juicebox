@@ -6,6 +6,13 @@ const { PORT = 3000 } = process.env;
 const express = require('express');
 const server = express();
 
+// Connecting to our database
+const { client } = require('./db');
+client.connect();
+
+const bodyParser = require('body-parser');
+server.use(bodyParser.json());
+
 // Setting up morgan which logs incoming requests
 const morgan = require('morgan');
 server.use(morgan('dev'));
@@ -24,10 +31,6 @@ server.use((req, res, next) => {
 // Setting up our routes which all start with /api
 const apiRouter = require('./api');
 server.use('/api', apiRouter);
-
-// Connecting to our database
-const { client } = require('./db');
-client.connect();
 
 server.listen(PORT, () => {
   console.log('The server is up on port', PORT);
