@@ -1,4 +1,3 @@
-// Checks for authorized users and placed as a middleware parameter inside routes
 const requireUser = (req, res, next) => {
   if (!req.user) {
     next({

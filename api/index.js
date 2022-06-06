@@ -1,10 +1,10 @@
-// Starting point of our router, which will branch off to users, posts, tags endpoints
 const express = require('express');
 const apiRouter = express.Router();
 
 const jwt = require('jsonwebtoken');
-const { getUserById } = require('../db');
 const { JWT_SECRET } = process.env;
+
+const { getUserById } = require('../db');
 
 apiRouter.use(async (req, res, next) => {
   const prefix = 'Bearer ';
@@ -15,7 +15,6 @@ apiRouter.use(async (req, res, next) => {
   } else if (auth.startsWith(prefix)) {
     const token = auth.slice(prefix.length);
 
-    // try to decode the id and set the user
     try {
       const { id } = jwt.verify(token, JWT_SECRET);
 
@@ -34,7 +33,6 @@ apiRouter.use(async (req, res, next) => {
   }
 });
 
-// Testing if JWT is working
 apiRouter.use((req, res, next) => {
   if (req.user) {
     console.log('User is set:', req.user);
@@ -52,7 +50,6 @@ apiRouter.use('/posts', postsRouter);
 // Alternate way to write above routes
 apiRouter.use('/tags', require('./tags'));
 
-// ERROR HANDLER
 apiRouter.use((error, req, res, next) => {
   res.send({
     name: error.name,

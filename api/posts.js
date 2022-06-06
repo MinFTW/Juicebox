@@ -28,8 +28,6 @@ postsRouter.get('/', async (req, res, next) => {
 postsRouter.post('/', requireUser, async (req, res, next) => {
   const { title, content, tags = "" } = req.body;
 
-  // trim removes whitespace before and after the tags
-  // split turns the strings into an array using regex
   const tagArray = tags.trim().split(/\s+/);
   const postData = {};
 

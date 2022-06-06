@@ -19,7 +19,7 @@ tagsRouter.get('/', async (req, res, next) => {
 });
 
 tagsRouter.get('/:tagName/posts', async (req, res, next) => {
-  // cannot use URL's with hash tags inside, need to decode first
+  // cannot use URL's with hash tags, need to decode first
   const tagName = decodeURIComponent(req.params.tagName);
 
   try {

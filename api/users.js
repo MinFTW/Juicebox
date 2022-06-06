@@ -3,14 +3,12 @@ const usersRouter = require('express').Router();
 const { getAllUsers, getUserByUsername, createUser } = require('../db');
 const jwt = require('jsonwebtoken');
 
-// This will log to the console everytime a request is made to this endpoint, then move on to the next middleware
 usersRouter.use((req, res, next) => {
   console.log('A request is being made to /users');
 
   next();
 });
 
-// This will get all the users stored in our database and send back a users JSON
 usersRouter.get('/', async (req, res, next) => {
   try {
     const users = await getAllUsers();
