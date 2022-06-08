@@ -1,6 +1,13 @@
 // Alternate way to assign usersRouter
 const usersRouter = require('express').Router();
-const { getAllUsers, getUserByUsername, createUser } = require('../db');
+const {
+  getAllUsers,
+  getUserByUsername,
+  getUserById,
+  createUser,
+  updateUser,
+} = require('../db');
+const { requireUser } = require('./utils');
 const jwt = require('jsonwebtoken');
 
 usersRouter.use((req, res, next) => {
@@ -16,39 +23,6 @@ usersRouter.get('/', async (req, res, next) => {
     res.send({ users });
   } catch ({ name, message }) {
     next({ name, message });
-  }
-});
-
-usersRouter.post('/login', async (req, res, next) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    next({
-      name: 'MissingCredentialsError',
-      message: 'Please supply both a username and password',
-    });
-  }
-
-  try {
-    const user = await getUserByUsername(username);
-
-    if (user && user.password == password) {
-      const token = jwt.sign(
-        { id: user.id, username },
-        process.env.JWT_SECRET,
-        { expiresIn: '1w' }
-      );
-
-      res.send({ message: `You're logged in!`, token: `${token}` });
-    } else {
-      next({
-        name: 'IncorrectCredentialsError',
-        message: 'Username or password is incorrect',
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    next(error);
   }
 });
 
@@ -87,6 +61,65 @@ usersRouter.post('/register', async (req, res, next) => {
       message: 'thank you for signing up',
       token,
     });
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
+
+usersRouter.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    next({
+      name: 'MissingCredentialsError',
+      message: 'Please supply both a username and password',
+    });
+  }
+
+  try {
+    const user = await getUserByUsername(username);
+
+    if (user && user.password == password) {
+      const token = jwt.sign(
+        { id: user.id, username },
+        process.env.JWT_SECRET,
+        { expiresIn: '1w' }
+      );
+
+      res.send({ message: `You're logged in!`, token: `${token}` });
+    } else {
+      next({
+        name: 'IncorrectCredentialsError',
+        message: 'Username or password is incorrect',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+usersRouter.delete('/:userId', requireUser, async (req, res, next) => {
+  try {
+    const user = await getUserById(req.params.userId);
+
+    if (user && user.id === req.user.id) {
+      const updatedUser = await updateUser(user.id, { active: false });
+
+      res.send({ user: updatedUser });
+    } else {
+      next(
+        user
+          ? {
+              name: 'UnauthorizedUserError',
+              message: 'You cannot delete a user which is not yours',
+            }
+          : {
+              name: 'UserNotFoundError',
+              message: 'That user does not exist',
+            }
+      );
+    }
   } catch ({ name, message }) {
     next({ name, message });
   }
