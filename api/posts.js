@@ -1,7 +1,7 @@
 const express = require('express');
 const postsRouter = express.Router();
 const { getAllPosts, createPost, updatePost, getPostById } = require('../db');
-const { requireUser } = require('./utils');
+const { requireUser, requireActiveUser } = require('./utils');
 
 postsRouter.use((req, res, next) => {
   console.log('A request is being made to /posts');
@@ -25,7 +25,7 @@ postsRouter.get('/', async (req, res, next) => {
   }
 });
 
-postsRouter.post('/', requireUser, async (req, res, next) => {
+postsRouter.post('/', requireUser, requireActiveUser, async (req, res, next) => {
   const { title, content, tags = "" } = req.body;
 
   const tagArray = tags.trim().split(/\s+/);
@@ -54,7 +54,7 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
   }
 });
 
-postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
+postsRouter.patch('/:postId', requireUser, requireActiveUser, async (req, res, next) => {
   const { postId } = req.params;
   const { title, content, tags } = req.body;
 
@@ -89,7 +89,7 @@ postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   }
 });
 
-postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+postsRouter.delete('/:postId', requireUser, requireActiveUser, async (req, res, next) => {
   try {
     const post = await getPostById(req.params.postId);
 
