@@ -2,3 +2,4 @@
 - Express
 - PostgreSQL
 - Heroku
+- JSON Web Tokens
